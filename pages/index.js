@@ -1,7 +1,32 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 
+import { useState } from 'react';
+
 export default function Home() {
+
+
+  const [generatedNumber, setGeneratedNumber] = useState(null);
+
+  const saveRandomNumber = async () => {
+    const randomNum = Math.floor(Math.random() * 100);
+    setGeneratedNumber(randomNum);
+
+    const response = await fetch('/api/save-number', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ number: randomNum }),
+    });
+
+    if (response.ok) {
+      console.log('Number saved successfully!');
+    } else {
+      console.error('Failed to save number.');
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -9,7 +34,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      
       <main>
+      <div>
+      <h1>Save a Random Number</h1>
+      <button onClick={saveRandomNumber}>Save Random Number</button>
+      {generatedNumber !== null && <p>Generated Number: {generatedNumber}</p>}
+    </div>
+
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
